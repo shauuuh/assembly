@@ -1,0 +1,86 @@
+INT 21H se realizará como sigue:
+- Introducimos en (AH) el número de función a la que deseamos acceder.
+- En caso de que deseemos acceder a una sub-función dentro de una función, 
+debemos indicarlo introduciendo en (AL) el número de esa sub-función.
+- Llamar a la INT 21H.
+
+INT 21H Función 01H:
+Entrada de Carácter con Eco (ó salida)
+LLAMADA:
+AH = 01H
+DEVUELVE:
+AL = Código ASCII del Carácter leído y Echo a pantalla
+(si AH =08H) es servicio sin Echo)
+
+INT 21H Función 02H
+Salida de Carácter
+LLAMADA:
+AH = 02H
+DL = Código ASCII a enviar al dispositivo de salida.
+DEVUELVE:
+NADA.
+
+INT 21H Función 05H
+Envío de Carácter a la Impresora
+LLAMADA:
+AH = 05H
+DL = Código ASCII a enviar al dispositivo de salida.
+DEVUELVE: NADA
+
+INT 21H Función 06H
+Envío de Carácter a la pantalla como símbolo
+LLAMADA:
+AH = 06H
+DL = símbolo entre "cuotation marks" 'A' ó "#".
+DEVUELVE: NADA
+
+INT 21H Función 09H
+Visualización de una cadena de caracteres
+LLAMADA:
+AH = 09H
+DS:DX = Segmento: Desplazamiento de la cadena a visualizar 
+(in DX - offset address of string in data segment)
+DS debe apuntar al segmento donde se encuentra la cadena.
+DX debe contener el desplazamiento de la cadena dentro de ese segmento.
+
+Ejemplo: Definition of the message in Data segment
+MSG DB "This is a message$" or "This...","$"
+Program in Code segment
+Mov AH, 09H
+Mov DX, Offset MSG
+Int 21 H
+ 
+DEVUELVE: NADA.
+ 
+EFECTO: Se envía una cadena de caracteres al dispositivo estándar de salida. 
+Si no se ha redireccionado la salida, la cadena se enviará a la pantalla.
+ 
+INT 21H Función 0AH
+Leer cadena de símbolos desde teclado y su código se almacena al buffer
+LLAMADA:
+AH = 0AH
+DX =dirección de buffer en segmento de datos
+DEVUELVE:
+En dirección DS:DX la cadena de ASCII códigos de símbolos entrantes
+ 
+Ejemplo. Define Buffer address in data segment
+BUF DB 6,0,0,0,0,0,0 (6-simbols,
+5 places for input simbols by zero, and last zero is for RETURN ). 
+More than 6 - beep and ignore
+In code segment the program
+Mov AH; 0Ah
+Mov DX, Offset BUF
+INT 21H ; input 5 symbols to buffer with "return" 
+code and output all of them to screen
+
+INT 21H Función 0BH
+Comprobación del estado de la entrada
+LLAMADA:
+AH = 0BH
+DEVUELVE:
+AL = 00H si no hay carácter disponible.
+AL = FFH si hay algún carácter disponible.
+ 
+EFECTO: Se comprueba si hay algún carácter procedente del dispositivo estándar de entrada.
+La entrada puede ser redireccionada.
+Si no hay tal redirección, se comprueba el buffer de teclado
