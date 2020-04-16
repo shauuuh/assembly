@@ -1,0 +1,102 @@
+Ensamblador:
+DS->segmento de datos
+SS->segmento de pila
+CS->segmento de código
+ES->segmento extra
+
+Segmento: es un grupo de localidades con una longitud minima de 16 bytes y máxima de 64kb.
+Desplazamientos: cantidad de 2 bytes que va desde 0000H hasta FFFFH (0 a 65535), un segmento
+abarca com maximo 64k.
+
+ DS->-------------------
+     |segmento de datos|
+ CS->|-----------------|	
+CS:IP| segmento código |
+ SS->|-----------------|
+     |  segmento pila  |
+SS:SP|-----------------|
+
+
+MOV: OPER1,OPER2(COPIA CONTENIDO OPER2 A OPER1)
+TIPOS DE DIRECCIONAMIENTO.
+
+DIRECCIONAMIENTO DIRECTO:
+(en el oper2 se indica la dirección de desplazamiento
+ donde se encuentran los datos de origen)
+MOV AX,[1000H](copia en ax lo que se encuentra almacenado en ds:1000h)
+
+DIRECCIONAMIENTO INMEDIATO:
+(los datos son proporcionados directamente como parte de la instruccion)
+MOV AX,34H(copia en ax el numero 34h hexadecimal)
+MOV CX,10(copia en cx el numero 10 en decimal)
+
+DIRECCIONAMIENTO POR REGISTRO:
+(en este modo de direccionamiento, el segundo operando es un registro,
+el cual contiene los datos con los que el microprocesador ejecutará la instrucción)
+MOV AX,BX(copia en ax el contenido del registro bx)
+
+DIRECCIONAMIENTO INDIRECTO POR REGISTRO:
+(en el modo indirecto por registro, el segundo operando es un registro, el cual
+contiene la dirección desplazamiento correspondiente a los datos para 
+la instrucción)
+MOV AX,[BX](copia en ax el dato que se encuentre en la localidad 
+de memoria ds:[bx]
+
+
+{
+
+}
+.DATA
+  <tu data(informacion) inicializada>
+  ....
+.DATA?
+  <tu data NO inicializada>
+  ....
+.CONST
+  <constantes>
+  ....
+.CODE
+  <Etiqueta>
+  <codigo>
+  ....
+  end <Etiqueta> 
+
+REGISTROS DE USO GENERAL:
+AX->ACUMULADOR(DIVIDIDO EN AH Y AL), 8 bits c/u. Intervienen en las
+operaciones aritmeticas y logicas, despues de la operacion arroja un resultafo
+BX->REGISTRO BASE,(DIVIDIDO EN BH Y BL),se utiliza en transferencias de datos
+entre la memoria y el procesador.
+CX->REGISTRO CONTADOR
+DX->REGISTRO DATOS
+
+
+  
+
+
+la directiva.model define el tipo de memoria que se utilizara
+la directiva.code nos indica que lo que está a continuación  es nuestro programa 
+la etiqueta programa indica al ensamblador  el inicio del programa
+.MODEL SMALL//se define el modelo de memoria, se indica donde incia el codigo
+del programa  en donde comienzan las intrucciones
+.CODE//nos indica que lo que esta a continuación es nuestro programa.
+Programa:_//la etiqueta Programa indica al ensamblador el inicio del programa.
+
+MOV AX, @DATA //vamos a colocar la direccion del segmento de datos
+MOV DS, AX//Inicializa el registro DS con la dirección dada
+
+MOV DX, Offset Texto: Colocamos en DX la dirección dentro del segmento de la
+cadena a desplegar}
+
+MOV AH, 9//Utilizamos la función 09 de int21h 
+INT 21H
+
+MOV AX,4C00H//MOV AH,4CH
+              MOV AL,00H //TERMINA LA EJECUCIÓN DEL PROGRAMA
+                      	   Y DEVUELVE EL CONTROL AL BIOS. DE AMABAS MANERAS 
+                           DA EL MISMO RESULTADO.
+INT 21H
+.DATA
+TEXTO DB 'MENSAJE EN PANTALLA. $'
+.STACK 
+END PROGRAMA
+
